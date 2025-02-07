@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# @blacksheepcode/use-cookie-state
 
-## Getting Started
 
-First, run the development server:
+A `useState` like hook to use the values of cookies. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+This hook is responsive to any changes made to the cookie outside of the React context (eg. as a result of new server response). 
+
+The hook uses the [CookieStore API](https://developer.mozilla.org/en-US/docs/Web/API/CookieStore) and includes a polling fallback for browsers that do not support it. 
+
+## Usage 
+
+**Basic usage**
+
+```js
+const [value, setValue, deleteValue] = useCookieState("the-cookie-name", "default-value"); 
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Configuring the polling fallback rate**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The default rate is 250ms - you can change this with the option parameter.
 
-## Learn More
+```
+const [value, setValue, deleteValue] = useCookieState("the-cookie-name", "default-value", {
+    polyfillPollRateMs:50
+}); 
 
-To learn more about Next.js, take a look at the following resources:
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Testing 
 
-## Deploy on Vercel
+For real browser testing, you can interact with browser cookies directly.  Suggest using [js-cookie](https://www.npmjs.com/package/js-cookie/v/2.2.1) as some browsers do not support the more convenient CookieStore API. 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```jsx
+		const screen = render(<TestComponent/>); 
+		await expect.element(screen.getByText("i-am-default-value")).toBeVisible();
+
+		await screen.getByRole('button', { name: 'Update' }).click()
+		await expect.element(screen.getByText("the-new-value")).toBeVisible();
+		expect(Cookies.get(TEST_COOKIE_NAME)).toEqual("the-new-value") // 👈 Assertions on cookie state
+
+		Cookies.set(TEST_COOKIE_NAME, "hello-world"); // 👈 Changing cookie state
+		await expect.element(screen.getByText("hello-world")).toBeVisible(); // 👈 Assertions on page state based on cookie state
+```
+

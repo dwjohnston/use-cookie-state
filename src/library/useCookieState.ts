@@ -30,7 +30,7 @@ async function deleteCookie(cookie: string): Promise<void> {
 export function listenForCookieChange(
 	cookieName: string,
 	onChange: (newValue: string | null) => void,
-	pollingRate = 1000,
+	pollingRate = 250,
 ): () => void {
 	// If the cookieStore is available, we can can use the change event listener
 	if ("cookieStore" in window) {
@@ -78,7 +78,7 @@ export function listenForCookieChange(
 type UseCookieStateOptions = {
 	/**
 	 *	If cookieStore is not supported then the hook falls back to a polling solution at this timing
-	 	@default 1000
+	 	@default 250
 	 */
 	polyfillPollRateMs?: number;
 };
@@ -105,7 +105,7 @@ type UseCookieReturn = [
  * @param options
  * @returns
  */
-export default function useCookieState(
+export function useCookieState(
 	name: string,
 	defaultValue: string | null,
 	options?: UseCookieStateOptions,
@@ -119,7 +119,9 @@ export default function useCookieState(
 	useEffect(() => {
 		// The initial value of the cookie on the client, if it exists
 		getCookie(name).then((cookie) => {
-			setValue(cookie);
+			if (cookie) {
+				setValue(cookie);
+			}
 		});
 
 		// Any subsequent changes to the cookie will be listened to
@@ -127,11 +129,15 @@ export default function useCookieState(
 		return listenForCookieChange(
 			name,
 			(newValue) => {
-				setValue(newValue);
+				if (newValue) {
+					setValue(newValue);
+				} else {
+					setValue(defaultValue);
+				}
 			},
 			options?.polyfillPollRateMs,
 		);
-	}, [name, options?.polyfillPollRateMs]);
+	}, [name, options?.polyfillPollRateMs, defaultValue]);
 
 	// For updates to the cookie we just update the cookie store directly,
 	// And allow the event listener to update the state
