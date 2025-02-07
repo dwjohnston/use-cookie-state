@@ -30,18 +30,34 @@ const [value, setValue, deleteValue] = useCookieState("the-cookie-name", "defaul
 
 ## Testing 
 
-For real browser testing, you can interact with browser cookies directly.  Suggest using [js-cookie](https://www.npmjs.com/package/js-cookie/v/2.2.1) as some browsers do not support the more convenient CookieStore API. 
+For both real browser and JSDOM-based testing, you can interact with browser cookies directly.  Suggest using [js-cookie](https://www.npmjs.com/package/js-cookie/v/2.2.1) as some browsers do not support the more convenient CookieStore API. 
 
 
 ```jsx
-		const screen = render(<TestComponent/>); 
-		await expect.element(screen.getByText("i-am-default-value")).toBeVisible();
+const TEST_COOKIE_NAME ="TEST-COOKIE-NAME";
 
-		await screen.getByRole('button', { name: 'Update' }).click()
-		await expect.element(screen.getByText("the-new-value")).toBeVisible();
-		expect(Cookies.get(TEST_COOKIE_NAME)).toEqual("the-new-value") // 👈 Assertions on cookie state
+function TestComponent() {
+	const [value, setValue, deleteValue] = useCookieState(
+		TEST_COOKIE_NAME,
+		"i-am-default-value",
+		{
+			polyfillPollRateMs:5
+		}
+	);
 
-		Cookies.set(TEST_COOKIE_NAME, "hello-world"); // 👈 Changing cookie state
-		await expect.element(screen.getByText("hello-world")).toBeVisible(); // 👈 Assertions on page state based on cookie state
+    return <div>
+		<p>{value}</p>
+		<button type="button" onClick={() => setValue("the-new-value")}>Update</button>
+		<button type="button" onClick={() => deleteValue()}>Delete</button>
+    </div>
+}
+
+test('Is responsive to cookie changes', async () => {
+  render(<TestComponent />);
+  const textElement = screen.getByText('i-am-default-value');
+  expect(textElement).toBeInTheDocument();
+  Cookies.set(TEST_COOKIE_NAME, "foo-bar");
+  expect(await screen.findByText("foo-bar")).toBeInTheDocument();
+});
 ```
 

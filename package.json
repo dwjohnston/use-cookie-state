@@ -1,44 +1,45 @@
 {
-  "name": "@blacksheepcode/use-cookie-state",
-  "version": "0.1.0",
-  "private": false,
-  "main": "./dist/exports.js",
-  "files": [
-    "./dist"
-  ],
-  "exports": {
-    ".": "./dist/exports.js"
-  },
-  "scripts": {
-    "next:dev": "next dev",
-    "next:build": "next build",
-    "next:start": "next start",
-    "next:lint": "next lint",
-    "build": "rm -rf dist && tsc -p tsconfig.build.json",
-    "prepublishOnly": "npm run build",
-    "test": "vitest"
-  },
-  "dependencies": {
-    "js-cookie": "^3.0.5"
-  },
+	"name": "@blacksheepcode/use-cookie-state",
+	"version": "0.1.0",
+	"private": false,
+	"publishConfig": {
+		"access": "public"
+	},
+	"main": "./dist/exports.js",
+	"files": ["./dist"],
+	"exports": {
+		".": "./dist/exports.js"
+	},
+	"scripts": {
+		"next:dev": "next dev",
+		"next:build": "next build",
+		"next:start": "next start",
+		"next:lint": "next lint",
+		"build": "rm -rf dist && tsc -p tsconfig.build.json",
+		"prepublishOnly": "npm run build",
+		"test": "vitest"
+	},
+	"dependencies": {
+		"js-cookie": "^3.0.5"
+	},
 
-  "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18"
-  },
-  "devDependencies": {
-    "next": "15.1.6",
-    "react": ">=18",
-    "react-dom": ">=18",  
-    "@types/js-cookie": "^3.0.6",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@vitest/browser": "^3.0.5",
-    "human-readable-ids": "^1.0.4",
-    "playwright": "^1.50.1",
-    "typescript": "^5",
-    "vitest": "^3.0.5",
-    "vitest-browser-react": "^0.0.4",
-  }
+	"peerDependencies": {
+		"react": ">=18",
+		"react-dom": ">=18"
+	},
+	"devDependencies": {
+		"next": "15.1.6",
+		"react": ">=18",
+		"react-dom": ">=18",
+		"@types/js-cookie": "^3.0.6",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"@vitest/browser": "^3.0.5",
+		"human-readable-ids": "^1.0.4",
+		"playwright": "^1.50.1",
+		"typescript": "^5",
+		"vitest": "^3.0.5",
+		"vitest-browser-react": "^0.0.4"
+	}
 }
