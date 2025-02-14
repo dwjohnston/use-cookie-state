@@ -2,6 +2,7 @@
 	"name": "@blacksheepcode/use-cookie-state",
 	"version": "1.0.0",
 	"private": false,
+	"license":"MIT",
 	"publishConfig": {
 		"access": "public"
 	},
